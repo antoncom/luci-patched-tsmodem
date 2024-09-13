@@ -473,7 +473,10 @@ function process.exec(command, stdout, stderr, nowait)
 		local i
 		for i = #pfds, 1, -1 do
 			local rfd = pfds[i]
-			if rfd.revents > 0 then
+			-- To fix tsmodem crash
+			-- if rfd.revents > 0 then
+			if (rfd and rfd.events and (type(rfd.revents) == "number") and (rfd.revents > 0)) then
+			-- end fix
 				local chunk, err = rfd.fd:read(4096)
 				if chunk and #chunk > 0 then
 					if rfd.cb then
