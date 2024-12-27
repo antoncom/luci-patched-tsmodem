@@ -1,0 +1,18 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+    set openvpn.my_free_vpnjanit=openvpn
+    set openvpn.my_free_vpnjanit.config='/etc/openvpn/my_free_vpnjanit.ovpn'
+    set openvpn.my_free_vpnjanit.enabled='1'
+    set openvpn.my_free_vpnjanit.auth_user_pass='/etc/openvpn/my_free_vpnjanit.auth'
+    commit openvpn
+    set network.openvpn=interface
+    set network.openvpn.proto='none'
+    set network.openvpn.delegate='0'
+    set network.openvpn.ifname='tun0'
+    commit network
+    add_list firewall.@zone[1].network='tun0'
+    commit firewall
+EOF
+
+exit 0
