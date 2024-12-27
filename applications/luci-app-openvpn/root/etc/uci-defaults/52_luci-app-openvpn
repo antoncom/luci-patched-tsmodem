@@ -1,0 +1,13 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+    set network.openvpn=interface
+    set network.openvpn.proto='none'
+    set network.openvpn.delegate='0'
+    set network.openvpn.ifname='tun0'
+    commit network
+    add_list firewall.@zone[1].network='tun0'
+    commit firewall
+EOF
+
+exit 0
