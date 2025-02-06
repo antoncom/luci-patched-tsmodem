@@ -1,0 +1,5 @@
+#!/bin/sh
+
+sed -i 's/--config "$conf"/\-\-config "$conf" \-\-askpass \/etc\/openvpn\/bitcord_demo_vpnjantit.auth/g' /etc/init.d/openvpn
+
+exit 0
