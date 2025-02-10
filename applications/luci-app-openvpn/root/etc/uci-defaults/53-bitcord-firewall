@@ -13,15 +13,6 @@ uci -q batch <<-EOF >/dev/null
     set firewall.@forwarding[-1].src='lan'
     set firewall.@forwarding[-1].dest='vpn'
     add firewall forwarding
-    set firewall.@forwarding[-1].src='3g'
-    set firewall.@forwarding[-].dest='lan'
-    add firewall forwarding
-    set firewall.@forwarding[-1].src='3g'
-    set firewall.@forwarding[-1].dest='vpn'
-    add firewall forwarding
-    set firewall.@forwarding[-1].src='vpn'
-    set firewall.@forwarding[-1].dest='3g'
-    add firewall forwarding
     set firewall.@forwarding[-1].src='vpn'
     set firewall.@forwarding[-1].dest='lan'
     commit firewall
