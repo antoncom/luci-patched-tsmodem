@@ -5,6 +5,4 @@ uci -q batch <<-EOF >/dev/null
 	commit luci
 EOF
 
-/etc/init.d/openvpn stop
-
 exit 0
