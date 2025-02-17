@@ -1,0 +1,14 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+    set openvpn.bitcord_demo_vpnjant=openvpn
+    set openvpn.bitcord_demo_vpnjant.config='/etc/openvpn/bitcord_demo_vpnjant.ovpn'
+    set openvpn.bitcord_demo_vpnjant.enabled='1'
+    commit openvpn
+    set network.openvpn=interface
+    set network.openvpn.proto='none'
+    set network.openvpn.device='tun0'
+    commit network
+EOF
+
+exit 0

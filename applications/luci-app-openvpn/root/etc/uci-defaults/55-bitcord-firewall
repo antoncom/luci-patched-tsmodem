@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# add 'openvpn' to covered network for 'vpn' zone of the Firewall; something like this:
+# firewall.@zone[3].network='openvpn' 'vpnpptp'
+
+ZONEID=$(uci show firewall | grep "name='vpn'" | awk -F "." '{print $2}')
+
+[[ -n $ZONEID ]] && {
+    ZONES=$(uci get firewall.$ZONEID.network)
+
+    uci del firewall.$ZONEID.network
+
+    for i in $(echo $ZONES | tr " ")
+    do
+        uci add_list firewall.$ZONEID.network=$i
+    done
+
+    uci add_list firewall.$ZONEID.network='openvpn'
+    uci commit firewall
+}
+
+
+exit 0
