@@ -1,8 +1,0 @@
-#!/bin/sh
-
-uci -q batch <<-EOF >/dev/null
-	set luci.flash_keep.openvpn='/etc/openvpn/'
-	commit luci
-EOF
-
-exit 0
