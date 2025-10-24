@@ -1,124 +1,167 @@
 {
-    "luci-mod-status-realtime": {
-	"description": "Grant access to realtime statistics",
-	"read": {
-	    "ubus": {
-		"luci": [ "getConntrackList", "getRealtimeStats" ],
-		"network.rrdns": [ "lookup" ]
-	    }
-	}
-    },
-
-    "luci-mod-status-processes": {
-	"description": "Grant access to process status",
-	"read": {
-	    "ubus": {
-		"luci": [ "getProcessList" ]
-	    }
+	"admin/status/overview": {
+		"title": "Overview",
+		"order": 1,
+		"action": {
+			"type": "template",
+			"path": "admin_status/index"
+		},
+		"depends": {
+			"acl": [ "luci-mod-status-index" ]
+		}
 	},
-	"write": {
-	    "file": {
-		"/bin/kill": [ "exec" ]
-	    },
-	    "ubus": {
-		"file": [ "exec" ]
-	    }
-	}
-    },
 
-    "luci-mod-status-logs": {
-	"description": "Grant access to system logs",
-	"read": {
-	    "cgi-io": [ "exec" ],
-	    "file": {
-		"/bin/dmesg -r": [ "exec" ],
-		"/sbin/logread": [ "stat" ],
-		"/sbin/logread -e ^": [ "exec" ],
-		"/usr/sbin/logread": [ "stat" ],
-		"/usr/sbin/logread -e ^": [ "exec" ]
-	    },
-	    "ubus": {
-		"file": [ "stat" ]
-	    }
-	}
-    },
-
-    "luci-mod-tsmsms": {
-	"description": "Grant access to tsmodem.sms send_sms method",
-	"read": {
-	    "ubus": {
-		"tsmodem.sms": ["send_sms"]
-	    }
-	}
-    },
-
-    "luci-mod-tsmodem-journal": {
-	"description": "Grant access to tsmodem.journal get_journal_log method",
-	"read": {
-	    "ubus": {
-		"tsmodem.journal": ["get_journal_log"]
-	    }
-	}
-    },
-
-    "luci-mod-tsmodem-driver": {
-	"description": "Grant access to tsmodem.driver send_at, lock, unlock, lock_status methods",
-	"read": {
-	    "ubus": {
-		"tsmodem.driver": ["send_at", "lock", "unlock", "lock_status"]
-	    }
-	}
-    },
-
-    "luci-mod-status-routes": {
-	"description": "Grant access to routing status",
-	"read": {
-	    "file": {
-		"/sbin/ip -[46] neigh show": [ "exec" ],
-		"/sbin/ip -[46] route show table all": [ "exec" ],
-		"/sbin/ip -[46] rule show": [ "exec" ]
-	    },
-	    "ubus": {
-		"file": [ "exec" ]
-	    }
-	}
-    },
-
-    "luci-mod-status-channel_analysis": {
-	"description": "Grant access to wireless channel status",
-	"read": {
-	    "ubus": {
-		"iwinfo": [ "info", "freqlist" ]
-	    }
-	}
-    },
-
-    "luci-mod-status-firewall": {
-	"description": "Grant access to firewall status",
-	"read": {
-	    "cgi-io": [ "exec" ],
-	    "file": {
-		"/usr/sbin/nft --terse --json list ruleset": [ "exec" ],
-		"/usr/sbin/iptables --line-numbers -w -nvxL -t *": [ "exec" ],
-		"/usr/sbin/ip6tables --line-numbers -w -nvxL -t *": [ "exec" ],
-		"/usr/sbin/ip6tables": [ "list" ],
-		"/usr/sbin/iptables-save": [ "exec" ],
-		"/usr/sbin/ip6tables-save": [ "exec" ]
-	    },
-	    "ubus": {
-		"file": [ "stat" ]
-	    }
+	"admin/status/routes": {
+		"title": "Routing",
+		"order": 2,
+		"action": {
+			"type": "view",
+			"path": "status/routes"
+		},
+		"depends": {
+			"acl": [ "luci-mod-status-routes" ]
+		}
 	},
-	"write": {
-	    "cgi-io": [ "exec" ],
-	    "file": {
-		"/etc/init.d/firewall restart": [ "exec" ],
-		"/usr/sbin/iptables -Z": [ "exec" ],
-		"/usr/sbin/ip6tables -Z": [ "exec" ]
-	    },
-	    "ubus": {
-		"file": [ "exec" ]
-	    }
+
+	"admin/status/iptables": {
+		"title": "Firewall",
+		"order": 3,
+		"action": {
+			"type": "view",
+			"path": "status/iptables"
+		},
+		"depends": {
+			"acl": [ "luci-mod-status-firewall" ],
+			"fs": [
+				{ "/usr/sbin/nft": "absent", "/usr/sbin/iptables": "executable" },
+				{ "/usr/sbin/nft": "absent", "/usr/sbin/ip6tables": "executable" }
+			]
+		}
+	},
+
+	"admin/status/nftables": {
+		"title": "Firewall",
+		"order": 3,
+		"action": {
+			"type": "view",
+			"path": "status/nftables"
+		},
+		"depends": {
+			"acl": [ "luci-mod-status-firewall" ],
+			"fs": { "/usr/sbin/nft": "executable" }
+		}
+	},
+
+	"admin/status/nftables/iptables": {
+		"action": {
+			"type": "view",
+			"path": "status/iptables"
+		}
+	},
+
+	"admin/status/logs": {
+		"title": "System Log",
+		"order": 4,
+		"action": {
+			"type": "alias",
+			"path": "admin/status/logs/syslog"
+		},
+		"depends": {
+			"acl": [ "luci-mod-status-logs" ]
+		}
+	},
+
+	"admin/status/logs/syslog": {
+		"title": "System Log",
+		"order": 1,
+		"action": {
+			"type": "view",
+			"path": "status/syslog"
+		}
+	},
+
+	"admin/status/logs/dmesg": {
+		"title": "Kernel Log",
+		"order": 2,
+		"action": {
+			"type": "view",
+			"path": "status/dmesg"
+		}
+	},
+
+	"admin/status/processes": {
+		"title": "Processes",
+		"order": 6,
+		"action": {
+			"type": "view",
+			"path": "status/processes"
+		},
+		"depends": {
+			"acl": [ "luci-mod-status-processes" ]
+		}
+	},
+
+	"admin/status/channel_analysis": {
+		"title": "Channel Analysis",
+		"order": 7,
+		"action": {
+			"type": "view",
+			"path": "status/channel_analysis"
+		},
+		"depends": {
+			"acl": [ "luci-mod-status-channel_analysis" ],
+			"uci": { "wireless": { "@wifi-device": true } }
+		}
+	},
+
+	"admin/status/realtime": {
+		"title": "Realtime Graphs",
+		"order": 7,
+		"action": {
+			"type": "alias",
+			"path": "admin/status/realtime/load"
+		},
+		"depends": {
+			"acl": [ "luci-mod-status-realtime" ]
+		}
+	},
+
+	"admin/status/realtime/load": {
+		"title": "Load",
+		"order": 1,
+		"action": {
+			"type": "view",
+			"path": "status/load"
+		}
+	},
+
+	"admin/status/realtime/bandwidth": {
+		"title": "Traffic",
+		"order": 2,
+		"action": {
+			"type": "view",
+			"path": "status/bandwidth"
+		}
+	},
+
+	"admin/status/realtime/wireless": {
+		"title": "Wireless",
+		"order": 3,
+		"action": {
+			"type": "view",
+			"path": "status/wireless"
+		},
+		"depends": {
+			"uci": { "wireless": { "@wifi-device": true } }
+		}
+	},
+
+	"admin/status/realtime/connections": {
+		"title": "Connections",
+		"order": 4,
+		"action": {
+			"type": "view",
+			"path": "status/connections"
+		}
 	}
-    }
 }

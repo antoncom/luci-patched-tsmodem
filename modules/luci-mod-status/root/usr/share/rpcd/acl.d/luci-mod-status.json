@@ -43,6 +43,33 @@
 		}
 	},
 
+	"luci-mod-tsmsms": {
+		"description": "Grant access to tsmodem.sms send_sms method",
+		"read": {
+			"ubus": {
+				"tsmodem.sms": ["send_sms"]
+			}
+		}
+	},
+
+	"luci-mod-tsmodem-journal": {
+		"description": "Grant access to tsmodem.journal get_journal_log method",
+		"read": {
+			"ubus": {
+				"tsmodem.journal": ["get_journal_log"]
+			}
+		}
+	},
+
+	"luci-mod-tsmodem-driver": {
+		"description": "Grant access to tsmodem.driver send_at, lock, unlock, lock_status methods",
+		"read": {
+			"ubus": {
+				"tsmodem.driver": ["send_at", "lock", "unlock", "lock_status"]
+			}
+		}
+	},
+
 	"luci-mod-status-routes": {
 		"description": "Grant access to routing status",
 		"read": {
